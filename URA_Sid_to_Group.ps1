@@ -1,4 +1,4 @@
-﻿
+
 
 Write-Host " "
 Write-Host "Starting User Rights Assignments" -foregroundColor Green
@@ -15,9 +15,9 @@ sleep 5
     }
 
     $secEditPath = "C:\SecureReport\output\$OutFunc\" + "$OutFunc.Inf"
+    $secEditOutPath = "C:\SecureReport\output\$OutFunc\" + "URAOut.txt"
     
     $hn = hostname
-
 
     $URALookup =[ordered]@{
         "Access this computer from the network" = "SeNetworkLogonRight","Access this computer from the network"
@@ -55,24 +55,20 @@ sleep 5
         "Change the time zone" = "SeTimeZonePrivilege", "Change the time zone" 
         "Create symbolic links" = "SeCreateSymbolicLinkPrivilege","Create symbolic links" 
         "Obtain an impersonation token for another user in the same session"  = "SeDelegateSessionUserImpersonatePrivilege","Obtain an impersonation token for another user in the same session" 
-
         }
-
 
     #Export Security Settings inc User Rights Assignments with secedit.exe
     secEdit.exe /export /cfg $secEditPath
-
-
+   
     $URA = get-content -path  $secEditPath |  Select-String  -Pattern 'S-1'
 
    foreach ($uraLine in $URA)
    {
-  
+   
     $uraItem = $uraLine.ToString().split("*").split("=") #.replace(",","")
     #write-host $uraItem -ForegroundColor Yellow
  
         foreach ($uralookupName in $URALookup.Values)
-    
         {
         $uraItemTrim = $uraItem[0].trim()
         $uralookupTrim = $uralookupName.trim()[0]
@@ -81,9 +77,11 @@ sleep 5
                 {
                    $uraDescripName = $uralookupName.trim()[1]
                    Write-Host $uraDescripName -ForegroundColor Cyan
-                   
-                }
 
+                   $uraDescripName | Out-File $secEditOutPath -Append
+
+
+                }
         }
        
        $uraItemTrimStart = ($uraItem | where {$_ -like "S-1*"}).replace(",","")
@@ -93,13 +91,14 @@ sleep 5
 
        foreach($uraSidItems in $uraItemTrimStart)
        {
+       $objSid = New-Object System.Security.Principal.SecurityIdentifier("$uraSidItems")
+       $objUserName = $objSID.Translate( [System.Security.Principal.NTAccount])
+       Write-Host $objUserName.Value -ForegroundColor Magenta
        
-        $objSid = New-Object System.Security.Principal.SecurityIdentifier("$uraSidItems")
-        $objUserName = $objSID.Translate( [System.Security.Principal.NTAccount])
-        Write-Host $objUserName.Value -ForegroundColor Magenta
-        
-   
+       $objUserName.Value  | Out-File $secEditOutPath -Append
+
        }
+       Add-Content $secEditOutPath -Value " "
 
    }
      
