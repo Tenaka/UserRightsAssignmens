@@ -61,7 +61,7 @@ sleep 5
     secEdit.exe /export /cfg $secEditPath
    
     $URA = get-content -path  $secEditPath |  Select-String  -Pattern 'S-1'
-
+    set-content -Path $secEditOutPath -Value " "
    foreach ($uraLine in $URA)
    {
    
@@ -77,9 +77,9 @@ sleep 5
                 {
                    $uraDescripName = $uralookupName.trim()[1]
                    Write-Host $uraDescripName -ForegroundColor Cyan
-
-                   $uraDescripName | Out-File $secEditOutPath -Append
-
+                   Add-Content $secEditOutPath -Value " "  -encoding UTF8
+                   
+                   $uraDescripName + " " + "`(" +$uraItem.trim()[0] +"`)" | Out-File $secEditOutPath -Append -encoding UTF8
 
                 }
         }
@@ -95,23 +95,7 @@ sleep 5
        $objUserName = $objSID.Translate( [System.Security.Principal.NTAccount])
        Write-Host $objUserName.Value -ForegroundColor Magenta
        
-       $objUserName.Value  | Out-File $secEditOutPath -Append
+       "   " + $objUserName.Value  | Out-File $secEditOutPath -Append  -encoding UTF8
 
        }
-       Add-Content $secEditOutPath -Value " "
-
    }
-     
-     
-
-
-
-
-
-
-  
-
-
-    
-    
-   
