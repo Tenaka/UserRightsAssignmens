@@ -55,7 +55,16 @@ sleep 5
         "Increase a process working set" = "SeIncreaseWorkingSetPrivilege","Increase a process working set" 
         "Change the time zone" = "SeTimeZonePrivilege", "Change the time zone" 
         "Create symbolic links" = "SeCreateSymbolicLinkPrivilege","Create symbolic links" 
-        "Obtain an impersonation token for another user in the same session"  = "SeDelegateSessionUserImpersonatePrivilege","Obtain an impersonation token for another user in the same session" 
+        "Obtain an impersonation token for another user in the same session" = "SeDelegateSessionUserImpersonatePrivilege","Obtain an impersonation token for another user in the same session" 
+        "Modify an object label"="SeRelabelPrivilege","Modify an object label"
+        "Access Credential Manager as a trusted caller"="SeTrustedCredManAccessPrivilege","Access Credential Manager as a trusted caller"
+        "Act as part of the operating system"="SeTcbPrivilege","Act as part of the operating system"
+        "Enable computer and user accounts to be trusted for delegation"="SeEnableDelegationPrivilege","Enable computer and user accounts to be trusted for delegation"
+        "Synchronize directory service data"="SeSyncAgentPrivilege","Synchronize directory service data"
+        "Lock pages in memory"="SeLockMemoryPrivilege","Lock pages in memory"
+        "Create permanent shared objects"="SeCreatePermanentPrivilege","Create permanent shared objects"
+        "Create a token object"="SeCreateTokenPrivilege","Create a token object"
+        "Allow log on through Remote Desktop Services"="SeRemoteInteractiveLogonRight","Allow log on through Remote Desktop Services"
         }
 
     #Export Security Settings inc User Rights Assignments with secedit.exe
