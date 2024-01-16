@@ -180,14 +180,26 @@
      
            Set-Content -Path $secEditImpPath -Value " "
            $NameURA=@()
-           foreach($uraSidItems in $uraItemTrimStart)
+           Foreach($uraSidItems in $uraItemTrimStart)
                {
                     if ($uraSidItems -match "S-1-")
-                        {
-                            $objSid = New-Object System.Security.Principal.SecurityIdentifier("$uraSidItems")
-                            $objUserName = $objSID.Translate([System.Security.Principal.NTAccount])  
-                            "   " + $objUserName.Value  | Out-File $secEditOutPath -Append  -encoding UTF8  
-                            [string]$NameURA += $objUserName.Value + ", "
+                        {                                                       
+                            try 
+                                {
+                                    $objSid = New-Object System.Security.Principal.SecurityIdentifier("$uraSidItems")
+                                    $objUserName = $objSID.Translate([System.Security.Principal.NTAccount])  
+                                    "   " + $objUserName.Value  | Out-File $secEditOutPath -Append  -encoding UTF8  
+                                    [string]$NameURA += $objUserName.Value + ", "
+                                }
+                            catch
+                                {
+                                    #Objects that are deleted but SIDs remain                                
+                                    [string]$NameURA += $uraSidItems + ", "
+                                    $uraSidItems | Out-File $secEditOutPath -Append  -encoding UTF8 
+                                    
+                                    $exceptionMessage = $_.Exception.message
+                                    SecureReportError($SecCheck,$exceptionMessage)        
+                                }
                         }
                     else
                         {
