@@ -144,7 +144,8 @@
     #Export Security Settings inc User Rights Assignments with secedit.exe
     secEdit.exe /export /cfg $secEditPath
    
-    $URA = get-content -path  $secEditPath |  Select-String  -Pattern 'S-1'
+    #$URA = get-content -path  $secEditPath |  Select-String  -Pattern 'S-1'
+    $URA = ((Get-Content -path  $secEditPath | select-string 'Privilege Rights]' -Context 0,50) | ForEach-Object {$_.Context.PostContext} | Select-String -Pattern 'Se')
     $fragURA=@()
     foreach ($uraLine in $URA)
        {
